@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cursos',  # ← Agrega esta línea
+    'cursos.apps.CursosConfig',  # ← Cambiar a esto
 ]
 
 MIDDLEWARE = [

@@ -1,3 +1,4 @@
+{% load course_extras %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -17,7 +18,7 @@
                     <div class="card-body">
                         <p class="lead">{{ course.description }}</p>
                         
-                        <h2 class="h4 mt-4">Lecciones</h2>
+                        <h2 class="h4 mt-4">Lecciones del Curso</h2>
                         
                         <form method="POST" action="{% url 'submit' course.id %}">
                             {% csrf_token %}
@@ -30,35 +31,39 @@
                                     <div class="card-body">
                                         <p>{{ lesson.content }}</p>
                                         
-                                        <h4 class="h6 mt-3">Preguntas:</h4>
-                                        {% for question in lesson.question_set.all %}
-                                            <div class="mb-4 p-3 border rounded">
-                                                <p class="fw-bold">{{ question.text }}</p>
-                                                {% for choice in question.choices.all %}
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="radio" 
-                                                               name="question_{{ question.id }}" 
-                                                               id="choice_{{ choice.id }}" 
-                                                               value="{{ choice.id }}"
-                                                               {% if user_submissions|get_item:question.id == choice.id %}checked{% endif %}>
-                                                        <label class="form-check-label" for="choice_{{ choice.id }}">
-                                                            {{ choice.text }}
-                                                        </label>
-                                                    </div>
-                                                {% endfor %}
-                                            </div>
-                                        {% empty %}
+                                        {% if lesson.question_set.all %}
+                                            <h4 class="h6 mt-3">Preguntas:</h4>
+                                            {% for question in lesson.question_set.all %}
+                                                <div class="mb-4 p-3 border rounded">
+                                                    <p class="fw-bold">{{ question.text }}</p>
+                                                    {% for choice in question.choices.all %}
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" 
+                                                                   name="question_{{ question.id }}" 
+                                                                   id="choice_{{ choice.id }}" 
+                                                                   value="{{ choice.id }}"
+                                                                   {% if user_submissions|get_item:question.id == choice.id %}checked{% endif %}>
+                                                            <label class="form-check-label" for="choice_{{ choice.id }}">
+                                                                {{ choice.text }}
+                                                            </label>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
                                             <p class="text-muted">No hay preguntas para esta lección.</p>
-                                        {% endfor %}
+                                        {% endif %}
                                     </div>
                                 </div>
                             {% empty %}
-                                <p>No hay lecciones disponibles para este curso.</p>
+                                <div class="alert alert-info">
+                                    No hay lecciones disponibles para este curso.
+                                </div>
                             {% endfor %}
                             
                             {% if lessons %}
                                 <div class="mt-4">
-                                    <button type="submit" class="btn btn-primary">Enviar Examen</button>
+                                    <button type="submit" class="btn btn-primary btn-lg">Enviar Examen</button>
                                 </div>
                             {% endif %}
                         </form>
